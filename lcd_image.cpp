@@ -30,21 +30,18 @@ void lcd_image_draw(
 )
 {
 	File file;
-	//uint16_t source->x, uint16_t source->y,
-	//uint16_t dest->x, uint16_t dest->y,
+	
 	#if DEBUG
-			Serial.print("Pre width: ");
-			Serial.print(width);
-			Serial.print(", Pre height: ");
-			Serial.println(height);
-			Serial.print("source->x: ");
-			Serial.print(source->x);
-			Serial.print(", source->y: ");
-			Serial.println(source->y);
+	Serial.print("Pre width: ");
+	Serial.print(width);
+	Serial.print(", Pre height: ");
+	Serial.println(height);
+	Serial.print("source->x: ");
+	Serial.print(source->x);
+	Serial.print(", source->y: ");
+	Serial.println(source->y);
 	#endif
 
-	#define SCREENSIZE 128
-	
 	if(dest->x + width >= tft->width())
 	{
 		width = tft->width() - dest->x;
@@ -54,11 +51,6 @@ void lcd_image_draw(
 	{
 		height = tft->height() - dest->y;
 	}
-
-	#define OVERFLOWFIX(position) ((position > tft->height()) ? position=0 : position)
-	
-	OVERFLOWFIX(dest->x);
-	OVERFLOWFIX(dest->y);
 
 	#if DEBUG
 	Serial.print("dest->x: ");
