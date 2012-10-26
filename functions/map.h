@@ -28,4 +28,33 @@ int16_t lat_to_y(int32_t lat) {
     return map(lat, map_north, map_south, 0, map_height);
 }
 
+/*
+* manhattan_dist
+*
+* from: first set of coord_t
+* to: second set of coord_t
+* ovr: overflow flag
+*/
+uint16_t manhattan_dist(coord_t *from, coord_t *to, int *ovr)
+{
+	uint32_t distance_x; // The x distance that we are computing
+	uint32_t distance_y; // The y distance that we are computing
+	uint32_t distance_total = 0; // The value of distance that we will be returning
+	
+	distance_x = abs(from->x - to->x); // Compute X param
+	
+	distance_y = abs(from->y - to->y); // Compute Y param
+	
+	distance_total = distance_x + distance_y; // Calculate the sum
+	
+	// Verify if overflow occured by comparing the 32 vs 16 bit versions of the same, if an overflow occured, then it will show here.
+	if(distance_total != (uint16_t) distance_total)
+	{
+		*ovr = 1; // Set overflow flag
+		return 0; // return 0
+	}
+	
+	return (uint16_t)distance_total; // return casted variable
+}
+
 #endif
