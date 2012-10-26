@@ -15,6 +15,7 @@
 #include "structures.h"
 #include "functions/drawings.h"
 #include "functions/restaurant.h"
+#include "functions/map.h"
 
 // standard U of A library settings, assuming Atmel Mega SPI pins
 #define SD_CS    5  // Chip select line for SD card
