@@ -40,7 +40,7 @@ coord_t c_zero = {0,0};
 coord_t iniJoy;
 coord_t JoyStick;
 coord_t OldJoyStick;
-coord_t cursor = {64,80};
+cursor_t cursor = {64,80};
 coord_t map_tile;
 coord_t map_redraw;
 
@@ -97,8 +97,8 @@ void setup(void) {
 
 void loop() {
 	
-	map_redraw.x = cursor.x - cursor.r;
-	map_redraw.y = cursor.y - cursor.r;
+	map_redraw.x = cursor.position.x - cursor.r;
+	map_redraw.y = cursor.position.y - cursor.r;
 	
 	map_tile.x = map_redraw.x + m_map.x;
 	map_tile.y = map_redraw.y + m_map.y;
@@ -140,9 +140,9 @@ void loop() {
 	{
 		#if DEBUG
 		Serial.print("cursor.x: ");
-		Serial.print(cursor.x);
+		Serial.print(cursor.position.x);
 		Serial.print(", cursor.y: ");
-		Serial.println(cursor.y);
+		Serial.println(cursor.position.y);
 		#endif
 		
 		lcd_image_draw(&map_image, &tft, &map_tile, &map_redraw, cursor.r*2+1, cursor.r*2+1);
