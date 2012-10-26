@@ -1,4 +1,4 @@
-TARGET = simpleimage
+TARGET = RestrauntFinder
 
 # Place your Arduino libs here! It's okay to not define this.
 ARDUINO_LIBS = SPI Adafruit_GFX Adafruit_ST7735 \

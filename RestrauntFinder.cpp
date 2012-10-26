@@ -14,6 +14,7 @@
 #include "lcd_image.h"
 #include "structures.h"
 #include "functions/drawings.h"
+#include "functions/restaurant.h"
 
 // standard U of A library settings, assuming Atmel Mega SPI pins
 #define SD_CS    5  // Chip select line for SD card
@@ -22,6 +23,8 @@
 #define TFT_RST  8  // Reset line for TFT (or connect to +5V)
 
 Adafruit_ST7735 tft = Adafruit_ST7735(TFT_CS, TFT_DC, TFT_RST);
+ 
+Sd2Card card;
 
 lcd_image_t map_image = { "yeg-big.lcd", 2048, 2048 };
 
@@ -65,6 +68,13 @@ void setup(void) {
     return;
   }
   Serial.println("OK!");
+  
+// test out reading blocks from the SD card
+
+    if (!card.init(SPI_HALF_SPEED, SD_CS)) {
+        Serial.println("Raw SD Initialization has failed");
+        while (1) {};  // Just wait, stuff exploded.
+        }
 
   // clear to blue
   tft.fillScreen(tft.Color565(137, 207, 240));
@@ -78,6 +88,11 @@ void setup(void) {
   
   lcd_image_draw(&map_image, &tft, &m_map, &c_zero,  tft.width(), tft.height());
   drawCursor(&tft, &cursor);
+  
+  Restaurant r;
+  get_restaurant(&card,0,&r);
+  
+  Serial.println(r.name);
 }
 
 void loop() {
@@ -92,9 +107,11 @@ void loop() {
 	
 	OldJoyStick = JoyStick;
 	
+	
     JoyStick.x = analogRead(HORZJOY);
     JoyStick.y = analogRead(VERTJOY);
 	
+	#if ZOOM
 	if(cursor.r != map(analogRead(ZOOMPOT),0,1023,3,15))
 	{
 		lcd_image_draw(&map_image, &tft, &map_tile, &map_redraw, cursor.r*2+1, cursor.r*2+1);
@@ -108,13 +125,16 @@ void loop() {
 		Serial.println(cursor.r);
 		#endif
 	}
+	#endif
 	
 	int cursor_speed = 2;
 	
 	if(iniJoy.x != JoyStick.x || iniJoy.y != JoyStick.y)
+	{
 		moveJoystick(&JoyStick, &cursor, &tft, cursor_speed, &redraw);
+		moveCursorOff(&map_image, &tft, &cursor, &m_map, &redraw);
+	}
 	
-	moveCursorOff(&map_image, &tft, &cursor, &m_map, &redraw);
 
 	if(redraw == 1)
 	{
