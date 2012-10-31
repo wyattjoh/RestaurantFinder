@@ -92,11 +92,6 @@ void setup(void) {
   
   lcd_image_draw(&map_image, &tft, &m_map, &c_zero,  tft.width(), tft.height());
   drawCursor(&tft, &cursor);
-  
-  Restaurant r;
-  get_restaurant(&card,0,&r);
-  
-  Serial.println(r.name);
 }
 
 void loop() {
