@@ -2,8 +2,8 @@
 #define _Structures_H
 
 typedef struct {
-	uint16_t x;
-	uint16_t y;
+	int16_t x;
+	int16_t y;
 } coord_t;
 
 typedef struct {
@@ -18,5 +18,10 @@ typedef struct {
   char name[55];            // Always null terminated
   
 } Restaurant;
+
+typedef struct {
+	uint16_t index;
+	uint16_t dist;
+} RestDist;
 
 #endif

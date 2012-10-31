@@ -50,6 +50,8 @@ coord_t m_map = {1000,1000};
 
 void setup(void) {
   Serial.begin(9600);
+  pinMode(BUTTJOY, INPUT);
+  digitalWrite(BUTTJOY, HIGH);
   
   JoyStick.x = analogRead(HORZJOY);
   JoyStick.y = analogRead(VERTJOY);
@@ -105,6 +107,9 @@ void loop() {
 	map_tile.x = map_redraw.x + m_map.x;
 	map_tile.y = map_redraw.y + m_map.y;
 	
+	cursor_map.x = map_tile.x + cursor.position.x;
+	cursor_map.y = map_tile.y + cursor.position.y;
+	
 	bool redraw = 0;
 	
 	OldJoyStick = JoyStick;
@@ -137,6 +142,27 @@ void loop() {
 		moveCursorOff(&map_image, &tft, &cursor, &m_map, &redraw);
 	}
 	
+	if(digitalRead(BUTTJOY) == LOW)
+	{
+		delay(500);
+		
+	    RestDist rest[1024];
+  
+	    Serial.println("Loading SD Card Data...");
+	     loadRest(&card, rest, &cursor_map, 1024);
+	    Serial.print("Sorting data...");
+	    comb_sort(rest, 1024);
+	    Serial.println("DONE");
+  
+	    for(int i = 0; i<=4; i++)
+		{
+		  Serial.print(rest[i].index);
+		  Serial.print(", ");
+		  Serial.println(rest[i].dist);
+		}
+	}
+	
+	
 
 	if(redraw == 1)
 	{
@@ -150,9 +176,6 @@ void loop() {
 		Serial.print(", ");
 		Serial.println(cursor_map.y, DEC);
 		#endif
-		
-		cursor_map.x = map_tile.x + cursor.position.x;
-		cursor_map.y = map_tile.y + cursor.position.y;
 		
 		lcd_image_draw(&map_image, &tft, &map_tile, &map_redraw, cursor.r*2+1, cursor.r*2+1);
 		drawCursor(&tft, &cursor);

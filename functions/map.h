@@ -1,6 +1,7 @@
 #ifndef _MAP_H
 #define _MAP_H
 
+#import "../debug.h"
 
 // These constants are for the 2048 by 2048 map.
 int16_t map_width = 2048;
@@ -44,6 +45,13 @@ uint16_t manhattan_dist(coord_t *from, coord_t *to, int *ovr)
 	distance_x = abs(from->x - to->x); // Compute X param
 	
 	distance_y = abs(from->y - to->y); // Compute Y param
+	
+	#if DEBUG
+	Serial.print("x: ");
+	Serial.print(distance_x);
+	Serial.print(", y: ");
+	Serial.println(distance_y);
+	#endif
 	
 	distance_total = distance_x + distance_y; // Calculate the sum
 	
