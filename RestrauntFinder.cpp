@@ -16,6 +16,7 @@
 #include "functions/drawings.h"
 #include "functions/restaurant.h"
 #include "functions/map.h"
+#include "functions/printRestaurant.h"
 
 // standard U of A library settings, assuming Atmel Mega SPI pins
 #define SD_CS    5  // Chip select line for SD card
@@ -48,6 +49,13 @@ coord_t map_redraw;
 
 coord_t m_map = {1000,1000};
 
+void rest_print(){
+RestDist rest[1024];
+loadRest(&card, rest, &cursor_map, 1024);
+comb_sort(rest, 1024);
+printRest(&card, &tft, rest);
+}
+
 void setup(void) {
   Serial.begin(9600);
   pinMode(BUTTJOY, INPUT);
@@ -57,7 +65,6 @@ void setup(void) {
   JoyStick.y = analogRead(VERTJOY);
   
   cursor.r = map(analogRead(ZOOMPOT),0,1023,3,15);
-  
   iniJoy.x = JoyStick.x;
   iniJoy.y = JoyStick.y;
   
@@ -137,25 +144,7 @@ void loop() {
 		moveCursorOff(&map_image, &tft, &cursor, &m_map, &redraw);
 	}
 	
-	if(digitalRead(BUTTJOY) == LOW)
-	{
-		delay(500);
-		
-	    RestDist rest[1024];
-  
-	    Serial.println("Loading SD Card Data...");
-	     loadRest(&card, rest, &cursor_map, 1024);
-	    Serial.print("Sorting data...");
-	    comb_sort(rest, 1024);
-	    Serial.println("DONE");
-  
-	    for(int i = 0; i<=4; i++)
-		{
-		  Serial.print(rest[i].index);
-		  Serial.print(", ");
-		  Serial.println(rest[i].dist);
-		}
-	}
+
 	
 	
 
