@@ -69,7 +69,7 @@ void setup(void) {
   JoyStick.x = analogRead(HORZJOY);
   JoyStick.y = analogRead(VERTJOY);
   
-  cursor.r = 7;
+  cursor.r = 2;
   
   iniJoy.x = JoyStick.x;
   iniJoy.y = JoyStick.y;

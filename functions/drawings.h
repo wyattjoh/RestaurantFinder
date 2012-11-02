@@ -5,11 +5,12 @@
 
 void drawCursor(Adafruit_ST7735 *tft, cursor_t *cursor)
 {
-	tft->drawPixel(cursor->position.x, cursor->position.y, tft->Color565(0x00, 0x00, 0x00));
+	//tft->drawPixel(cursor->position.x, cursor->position.y, tft->Color565(0x00, 0x00, 0x00));
 	//tft->drawCircle(cursor->position.x, cursor->position.y, cursor->r-1, tft->Color565(0,0,0));
 	//tft->drawCircle(cursor->position.x, cursor->position.y, cursor->r, tft->Color565(137, 207, 240));
 	//tft->fillCircle(cursor->position.x, cursor->position.y, cursor->r, tft->Color565(137, 207, 240));
-	tft->drawCircle(cursor->position.x, cursor->position.y, cursor->r, tft->Color565(0, 0, 0));
+	tft->fillCircle(cursor->position.x, cursor->position.y, cursor->r, ST7735_CYAN);
+	tft->drawCircle(cursor->position.x, cursor->position.y, cursor->r, ST7735_BLACK);
 }
 
 void moveJoystick(coord_t *JoyStick, cursor_t *cursor, Adafruit_ST7735 *tft, uint16_t cursor_speed, bool *redraw)
@@ -57,7 +58,7 @@ bool moveCursorOff(lcd_image_t *map_image, Adafruit_ST7735 *tft, cursor_t *curso
 {
 	coord_t c_zero = {0,0};
 	
-	if( tft->width() - cursor->r < cursor->position.x )
+	if( tft->width() - cursor->position.x <= 5 )
 	{
 		#if DEBUG
 			Serial.print("Map At: ");
@@ -77,7 +78,7 @@ bool moveCursorOff(lcd_image_t *map_image, Adafruit_ST7735 *tft, cursor_t *curso
 		
 		*redraw = 0;
 	}
-	else if( cursor->position.x - cursor->r < cursor->r )
+	else if( cursor->position.x  <= 5 )
 	{
 		#if DEBUG
 			Serial.print("Map At: ");
@@ -85,7 +86,7 @@ bool moveCursorOff(lcd_image_t *map_image, Adafruit_ST7735 *tft, cursor_t *curso
 		#endif
 		
 		m_map->x -= 84;
-		cursor->position.x = 84 + cursor->r + RADIUS_CORRECTION;
+		cursor->position.x = 84 + RADIUS_CORRECTION;
 		
 		#if DEBUG
 			Serial.print("Map Redrawn to: ");
@@ -97,7 +98,7 @@ bool moveCursorOff(lcd_image_t *map_image, Adafruit_ST7735 *tft, cursor_t *curso
 		
 		*redraw = 0;
 	}
-	else if( tft->height() - cursor->position.y - cursor->r < cursor->r )
+	else if( tft->height() - cursor->position.y <= 5 )
 	{
 		#if DEBUG
 			Serial.print("Map At: ");
@@ -105,7 +106,7 @@ bool moveCursorOff(lcd_image_t *map_image, Adafruit_ST7735 *tft, cursor_t *curso
 		#endif
 		
 		m_map->y += 94;
-		cursor->position.y = 52 - cursor->r + RADIUS_CORRECTION;
+		cursor->position.y = 52 + RADIUS_CORRECTION;
 		
 		#if DEBUG
 			Serial.print("Map Redrawn to: ");
@@ -117,7 +118,7 @@ bool moveCursorOff(lcd_image_t *map_image, Adafruit_ST7735 *tft, cursor_t *curso
 		
 		*redraw = 0;
 	}
-	else if( cursor->position.y - cursor->r < cursor->r )
+	else if( cursor->position.y <= 5 )
 	{
 		#if DEBUG
 			Serial.print("Map At: ");
@@ -125,7 +126,7 @@ bool moveCursorOff(lcd_image_t *map_image, Adafruit_ST7735 *tft, cursor_t *curso
 		#endif
 		
 		m_map->y -= 94;
-		cursor->position.y = 94 + cursor->r + RADIUS_CORRECTION;
+		cursor->position.y = 94 + RADIUS_CORRECTION;
 		
 		#if DEBUG
 			Serial.print("Map Redrawn to: ");

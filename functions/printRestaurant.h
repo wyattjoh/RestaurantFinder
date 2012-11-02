@@ -1,10 +1,11 @@
 #ifndef _printRestaurant_h_
 #define _printRestaurant_h_
 
+#define PAGESIZE 8
+
 void loadingScreen(Sd2Card *card, Adafruit_ST7735 *tft)
 {
-	tft->fillScreen(ST7735_WHITE);
-	tft->setTextColor(ST7735_RED);
+	tft->fillScreen(ST7735_BLACK);
 	tft->setTextSize(3);
 	
 	char string[] = "**************Loading**************";
@@ -41,26 +42,45 @@ void printRest (Sd2Card *card, Adafruit_ST7735 *tft, RestDist *rest_dist, int pa
 	
 	tft->setCursor(0,0);
 	tft->setTextSize(1);
+	tft->setTextWrap(true);
 	
-	tft->fillScreen(ST7735_BLACK);
+	Restaurant r[PAGESIZE];
+	int restIndex = 0;
+	for(int i = (page - 1)*PAGESIZE; i < (page - 1)*PAGESIZE + PAGESIZE; i++)
+	{
+		get_restaurant(card,rest_dist[i].index, &(r[restIndex]));
+		restIndex++;
+	}
 	
-	for (int i = (page - 1)*10; i < (page - 1)*10 + 10; i++){
-		Restaurant r;
-		get_restaurant(card,rest_dist[i].index, &r);
+	tft->fillScreen(ST7735_RED);
+	tft->setTextColor(ST7735_BLACK,ST7735_WHITE);
+	
+	tft->print("Page ");
+	tft->print(page);
+	tft->print("/");
+	tft->println(1024/PAGESIZE);
+	tft->println();
+	
+	restIndex = 0;
+	for (int i = (page - 1)*PAGESIZE; i < (page - 1)*PAGESIZE + PAGESIZE; i++){
+		//Restaurant r;
+		//get_restaurant(card,rest_dist[i].index, &r);
 		
-		tft->setTextColor(ST7735_YELLOW);
+		tft->setTextColor(ST7735_WHITE,ST7735_BLACK);
 		tft->print(i+1);
-		tft->print(". ");
+		tft->print(".");
 		tft->setTextColor(ST7735_WHITE);
-		tft->print(r.name);
+		tft->print(" ");
+		tft->print(r[restIndex].name);
 		tft->print(" ");
 		
-		tft->setTextColor(ST7735_CYAN);
+		tft->setTextColor(ST7735_YELLOW,ST7735_BLACK);
 		
-		for(int i = 0; i<r.rating/2; i++)
+		for(int i = 0; i<r[restIndex].rating/2; i++)
 			tft->print("*");
 		
 		tft->println();
+		restIndex++;
 	}
 }
 
