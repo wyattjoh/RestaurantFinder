@@ -33,10 +33,7 @@ lcd_image_t map_image = { "yeg-big.lcd", 2048, 2048 };
 // Joystick Settings
 #define VERTJOY 1
 #define HORZJOY 0
-#define BUTTJOY 9
-
-// Zoom Potentialometer Settings
-#define ZOOMPOT 2
+#define BUTTJOY 2
 
 coord_t c_zero = {0,0};
 coord_t iniJoy;
@@ -47,24 +44,33 @@ coord_t cursor_map;
 coord_t map_tile;
 coord_t map_redraw;
 
-coord_t m_map = {1000,1000};
+coord_t m_map = {857,828};
 
-void rest_print(){
-RestDist rest[1024];
-loadRest(&card, rest, &cursor_map, 1024);
-comb_sort(rest, 1024);
-printRest(&card, &tft, rest);
+volatile bool state = 0;
+
+void buttonPress()
+{
+	state = !state;
 }
 
 void setup(void) {
   Serial.begin(9600);
+  
+  // set buttonPin to INPUT and 
+  // turn on internal pull up resistor 
   pinMode(BUTTJOY, INPUT);
   digitalWrite(BUTTJOY, HIGH);
+  
+  // establish interrupts on button transitions
+  // this is actually not a good idea on an undebounced switch
+  // since it probably violates the signal spec for an interrupt.
+  attachInterrupt(BUTTJOY, buttonPress, FALLING);
   
   JoyStick.x = analogRead(HORZJOY);
   JoyStick.y = analogRead(VERTJOY);
   
-  cursor.r = map(analogRead(ZOOMPOT),0,1023,3,15);
+  cursor.r = 7;
+  
   iniJoy.x = JoyStick.x;
   iniJoy.y = JoyStick.y;
   
@@ -120,22 +126,6 @@ void loop() {
     JoyStick.x = analogRead(HORZJOY);
     JoyStick.y = analogRead(VERTJOY);
 	
-	#if ZOOM
-	if(cursor.r != map(analogRead(ZOOMPOT),0,1023,3,15))
-	{
-		lcd_image_draw(&map_image, &tft, &map_tile, &map_redraw, cursor.r*2+1, cursor.r*2+1);
-		
-		cursor.r = map(analogRead(ZOOMPOT),0,1023,3,15);
-		
-		drawCursor(&tft, &cursor);
-		
-		#if DEBUG
-		Serial.print("Zoom Analog Level: ");
-		Serial.println(cursor.r);
-		#endif
-	}
-	#endif
-	
 	int cursor_speed = 2;
 	
 	if(iniJoy.x != JoyStick.x || iniJoy.y != JoyStick.y)
@@ -144,9 +134,34 @@ void loop() {
 		moveCursorOff(&map_image, &tft, &cursor, &m_map, &redraw);
 	}
 	
-
-	
-	
+	if(state)
+	{
+		loadingScreen(&card, &tft);
+		RestDist rest[1024];
+		loadRest(&card, rest, &cursor_map, 1024);
+		comb_sort(rest, 1024);
+		printRest(&card, &tft, rest);
+		
+		int page = 1;
+		
+		while(state)
+		{
+			JoyStick.y = analogRead(VERTJOY);
+			
+			if(JoyStick.y > 800 && page != 1)
+			{
+				printRest(&card, &tft, rest, --page);
+			}
+			else if(JoyStick.y < 250)
+			{
+				printRest(&card, &tft, rest, ++page);
+			}
+		}
+		
+		coord_t c_zero = {0,0};
+		lcd_image_draw(&map_image, &tft, &m_map, &c_zero, tft.width(), tft.height());
+		drawCursor(&tft, &cursor);
+	}
 
 	if(redraw == 1)
 	{

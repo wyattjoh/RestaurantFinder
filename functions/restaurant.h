@@ -11,15 +11,20 @@
 #define RESTRAURANT_START_BLOCK 4000000
 #define BLOCK_LEN 512
 
-void get_restaurant(Sd2Card *card, int i, Restaurant *r)
+Restaurant buffer[8];
+int bufferIndex;
+
+void get_restaurant(Sd2Card *card,int i, Restaurant *r)
 {
+	if(bufferIndex != RESTRAURANT_START_BLOCK + i/8)
+	{
+		card->readBlock(RESTRAURANT_START_BLOCK + i/8, (uint8_t *) buffer);
+		bufferIndex = RESTRAURANT_START_BLOCK + i/8;
+	}
 	
-	Restaurant buffer[BLOCK_LEN/sizeof(Restaurant)];
-	card->readBlock(RESTRAURANT_START_BLOCK + i/8, (uint8_t *)buffer);
-	
-	*r = buffer[i%8];
-	
+	(*r) = buffer[i%8];
 }
+
 
 void loadRest(Sd2Card *card, RestDist *rest, coord_t *cursor_map, int length)
 {
@@ -48,32 +53,34 @@ void loadRest(Sd2Card *card, RestDist *rest, coord_t *cursor_map, int length)
 		#endif
 		
 		rest[i].dist = manhattan_dist(cursor_map, &restCoord, &overflow);
-		
-		//Serial.println(rest[i].dist);
 	}
 }
 
 void comb_sort(RestDist *input, size_t size) {
-    RestDist swap;
-    size_t i, gap = size;
-    bool swapped = false;
- 
-    while ((gap > 1) || swapped) {
-        if (gap > 1) {
-            gap = (size_t)((double)gap / 1.247330950103979);
-        }
- 
-        swapped = false;
- 
-        for (i = 0; gap + i < size; ++i) {
-			if (input[i].dist > input[i + gap].dist) {
-                swap = input[i];
-                input[i] = input[i + gap];
-                input[i + gap] = swap;
-                swapped = true;
-            }
-        }
-    }
+	RestDist swap;
+	size_t i, gap = size;
+	bool swapped = false;
+	
+	while ((gap > 1) || swapped)
+	{
+		if (gap > 1)
+		{
+			gap = (size_t)((double)gap / 1.247330950103979);
+		}
+		
+		swapped = false;
+		
+		for (i = 0; gap + i < size; ++i)
+		{
+			if (input[i].dist > input[i + gap].dist)
+			{
+				swap = input[i];
+				input[i] = input[i + gap];
+				input[i + gap] = swap;
+				swapped = true;
+			}
+		}
+	}
 }
 
 
