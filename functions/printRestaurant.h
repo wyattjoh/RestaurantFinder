@@ -1,7 +1,7 @@
 #ifndef _printRestaurant_h_
 #define _printRestaurant_h_
 
-#define PAGESIZE 8
+#include "../config.h"
 
 void loadingScreen(Sd2Card *card, Adafruit_ST7735 *tft)
 {

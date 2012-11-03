@@ -17,6 +17,7 @@
 #include "functions/restaurant.h"
 #include "functions/map.h"
 #include "functions/printRestaurant.h"
+#include "config.h"
 
 // standard U of A library settings, assuming Atmel Mega SPI pins
 #define SD_CS    5  // Chip select line for SD card
@@ -29,11 +30,6 @@ Adafruit_ST7735 tft = Adafruit_ST7735(TFT_CS, TFT_DC, TFT_RST);
 Sd2Card card;
 
 lcd_image_t map_image = { "yeg-big.lcd", 2048, 2048 };
-
-// Joystick Settings
-#define VERTJOY 1
-#define HORZJOY 0
-#define BUTTJOY 2
 
 coord_t c_zero = {0,0};
 coord_t iniJoy;

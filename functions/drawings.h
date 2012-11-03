@@ -1,7 +1,7 @@
 #ifndef _FUNCTIONS_DRAWINGS_H
 #define _FUNCTIONS_DRAWINGS_H
 
-#define RADIUS_CORRECTION 2
+#include "../config.h"
 
 void drawCursor(Adafruit_ST7735 *tft, cursor_t *cursor)
 {
