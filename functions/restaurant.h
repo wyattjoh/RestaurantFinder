@@ -8,8 +8,7 @@
 
 #include "map.h"
 
-#define RESTRAURANT_START_BLOCK 4000000
-#define BLOCK_LEN 512
+#include "../config.h"
 
 Restaurant buffer[8];
 int bufferIndex;

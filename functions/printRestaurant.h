@@ -38,7 +38,7 @@ void loadingScreen(Sd2Card *card, Adafruit_ST7735 *tft)
 	
 }
 
-void printRest (Sd2Card *card, Adafruit_ST7735 *tft, RestDist *rest_dist, int page = 1){
+void printRest (Sd2Card *card, Adafruit_ST7735 *tft, RestDist *rest_dist, uint16_t page){
 	
 	tft->setCursor(0,0);
 	tft->setTextSize(1);
@@ -60,6 +60,9 @@ void printRest (Sd2Card *card, Adafruit_ST7735 *tft, RestDist *rest_dist, int pa
 	tft->print("/");
 	tft->println(1024/PAGESIZE);
 	tft->println();
+	
+	if(analogRead(VERTJOY) > 1000 || analogRead(VERTJOY) < 50)
+		return;
 	
 	restIndex = 0;
 	for (int i = (page - 1)*PAGESIZE; i < (page - 1)*PAGESIZE + PAGESIZE; i++){
