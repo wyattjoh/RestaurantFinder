@@ -1,8 +1,8 @@
 /* Simple Image Drawing
- *
- * Draws an image to the screen.  The image is stored in "parrot.lcd" on 
- * the SD card.  The image file contains only raw pixel byte-pairs.
- */
+*
+* Draws an image to the screen.  The image is stored in "parrot.lcd" on 
+* the SD card.  The image file contains only raw pixel byte-pairs.
+*/
 
 #include "debug.h"
 
@@ -50,61 +50,65 @@ void buttonPress()
 }
 
 void setup(void) {
-  Serial.begin(9600);
+	Serial.begin(9600);
   
-  // set buttonPin to INPUT and 
-  // turn on internal pull up resistor 
-  pinMode(BUTTJOY, INPUT);
-  digitalWrite(BUTTJOY, HIGH);
+	// set buttonPin to INPUT and 
+	// turn on internal pull up resistor 
+	pinMode(BUTTJOY, INPUT);
+	digitalWrite(BUTTJOY, HIGH);
   
-  // establish interrupts on button transitions
-  // this is actually not a good idea on an undebounced switch
-  // since it probably violates the signal spec for an interrupt.
-  attachInterrupt(BUTTJOY, buttonPress, FALLING);
+	// establish interrupts on joystick button falling (when the button is initially pushed)
+	// NOTE: BUTTJOY has been set up with a debounced circut
+	attachInterrupt(BUTTJOY, buttonPress, FALLING);
   
-  JoyStick.x = analogRead(HORZJOY);
-  JoyStick.y = analogRead(VERTJOY);
+	// Define the cursor radius to be 2 pixles
+	cursor.r = 2;
   
-  cursor.r = 2;
+	// Read initial joystick position
+	iniJoy.x = analogRead(HORZJOY);
+	iniJoy.y = analogRead(VERTJOY);
   
-  iniJoy.x = JoyStick.x;
-  iniJoy.y = JoyStick.y;
-  
-  // If your TFT's plastic wrap has a Red Tab, use the following:
-  tft.initR(INITR_REDTAB);   // initialize a ST7735R chip, red tab
-  // If your TFT's plastic wrap has a Green Tab, use the following:
-  //tft.initR(INITR_GREENTAB); // initialize a ST7735R chip, green tab
+	// If your TFT's plastic wrap has a Red Tab, use the following:
+	tft.initR(INITR_REDTAB);   // initialize a ST7735R chip, red tab
+	// If your TFT's plastic wrap has a Green Tab, use the following:
+	//tft.initR(INITR_GREENTAB); // initialize a ST7735R chip, green tab
 
-  Serial.print("Initializing SD card...");
-  if (!SD.begin(SD_CS)) {
-    Serial.println("failed!");
-    return;
-  }
-  Serial.println("OK!");
+	#if DEBUG
+	Serial.print("Initializing SD card...");
+	#endif
+	if (!SD.begin(SD_CS))
+	{
+		Serial.println("failed!");
+		return;
+	}
+	#if DEBUG
+	Serial.println("OK!");
+	#endif
   
-// test out reading blocks from the SD card
+	// test out reading blocks from the SD card
+	if (!card.init(SPI_HALF_SPEED, SD_CS)) {
+		#if DEBUG
+		Serial.println("Raw SD Initialization has failed");
+		#endif
+		while (1) {};  // Just wait, stuff exploded.
+	}
 
-    if (!card.init(SPI_HALF_SPEED, SD_CS)) {
-        Serial.println("Raw SD Initialization has failed");
-        while (1) {};  // Just wait, stuff exploded.
-        }
+	// clear to blue
+	tft.fillScreen(tft.Color565(137, 207, 240));
+  
+	#if DEBUG
+	Serial.print("TFT Height: ");
+	Serial.print( tft.height() );
+	Serial.print(", TFT Width: ");
+	Serial.println( tft.width() );
+	#endif
 
-  // clear to blue
-  tft.fillScreen(tft.Color565(137, 207, 240));
-  
-  #if DEBUG
-  Serial.print("TFT Height: ");
-  Serial.print( tft.height() );
-  Serial.print(", TFT Width: ");
-  Serial.println( tft.width() );
-  #endif
-  
-  lcd_image_draw(&map_image, &tft, &m_map, &c_zero,  tft.width(), tft.height());
-  drawCursor(&tft, &cursor);
+	// Draw initial screen
+	lcd_image_draw(&map_image, &tft, &m_map, &c_zero,  tft.width(), tft.height());
+	drawCursor(&tft, &cursor);
 }
 
 void loop() {
-	
 	map_redraw.x = cursor.position.x - cursor.r;
 	map_redraw.y = cursor.position.y - cursor.r;
 	
