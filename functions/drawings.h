@@ -13,42 +13,42 @@ void drawCursor(Adafruit_ST7735 *tft, cursor_t *cursor)
 	tft->drawCircle(cursor->position.x, cursor->position.y, cursor->r, ST7735_BLACK);
 }
 
-void moveJoystick(coord_t *JoyStick, cursor_t *cursor, Adafruit_ST7735 *tft, uint16_t cursor_speed, bool *redraw)
+void moveJoystick(coord_t *JoyStick, cursor_t *cursor, Adafruit_ST7735 *tft, bool *redraw)
 {
 	if(JoyStick->x > 600)
 	{
-		cursor->position.x -= cursor_speed;
+		cursor->position.x -= CURSOR_SPEED;
 		if(JoyStick->x > 800)
 		{
-			cursor->position.x -= cursor_speed + 1;
+			cursor->position.x -= CURSOR_SPEED + 1;
 		}
 		*redraw = 1;
 	}
 	else if(JoyStick->x < 450)
 	{
-		cursor->position.x += cursor_speed;
+		cursor->position.x += CURSOR_SPEED;
 		if(JoyStick->x < 250)
 		{
-			cursor->position.x += cursor_speed + 1;
+			cursor->position.x += CURSOR_SPEED + 1;
 		}
 		*redraw = 1;
 	}
 	
 	if(JoyStick->y > 600)
 	{
-		cursor->position.y -= cursor_speed;
+		cursor->position.y -= CURSOR_SPEED;
 		if(JoyStick->y > 800)
 		{
-			cursor->position.y -= cursor_speed + 1;
+			cursor->position.y -= CURSOR_SPEED + 1;
 		}
 		*redraw = 1;
 	}
 	else if(JoyStick->y < 450)
 	{
-		cursor->position.y += cursor_speed;
+		cursor->position.y += CURSOR_SPEED;
 		if(JoyStick->y < 250)
 		{
-			cursor->position.y += cursor_speed + 1;
+			cursor->position.y += CURSOR_SPEED + 1;
 		}
 		*redraw = 1;
 	}

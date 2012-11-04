@@ -126,11 +126,10 @@ void loop() {
     JoyStick.x = analogRead(HORZJOY);
     JoyStick.y = analogRead(VERTJOY);
 	
-	int cursor_speed = 2;
 	
 	if(iniJoy.x != JoyStick.x || iniJoy.y != JoyStick.y)
 	{
-		moveJoystick(&JoyStick, &cursor, &tft, cursor_speed, &redraw);
+		moveJoystick(&JoyStick, &cursor, &tft, &redraw);
 		moveCursorOff(&map_image, &tft, &cursor, &m_map, &redraw);
 	}
 	
