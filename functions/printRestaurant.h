@@ -58,7 +58,7 @@ void printRest (Sd2Card *card, Adafruit_ST7735 *tft, RestDist *rest_dist, uint16
 	tft->print("Page ");
 	tft->print(page);
 	tft->print("/");
-	tft->println(1024/PAGESIZE);
+	tft->println(TOTAL_REST/PAGESIZE);
 	tft->println();
 	
 	if(analogRead(VERTJOY) > 1000 || analogRead(VERTJOY) < 50)

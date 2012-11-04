@@ -12,4 +12,6 @@
 #define BLOCK_LEN 512
 #define RADIUS_CORRECTION 2
 
+#define TOTAL_REST 1024 
+
 #endif

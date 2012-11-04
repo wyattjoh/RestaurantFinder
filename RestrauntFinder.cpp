@@ -135,9 +135,9 @@ void loop() {
 		uint16_t page = 1;
 		
 		loadingScreen(&card, &tft);
-		RestDist rest[1024];
-		loadRest(&card, rest, &cursor_map, 1024);
-		comb_sort(rest, 1024);
+		RestDist rest[TOTAL_REST];
+		loadRest(&card, rest, &cursor_map, TOTAL_REST);
+		comb_sort(rest, TOTAL_REST);
 		printRest(&card, &tft, rest, page);
 		
 		while(state)
@@ -148,7 +148,7 @@ void loop() {
 			{
 				printRest(&card, &tft, rest, --page);
 			}
-			else if(JoyStick.y < 250 && (page - 1)*PAGESIZE + PAGESIZE < 1024)
+			else if(JoyStick.y < 250 && (page - 1)*PAGESIZE + PAGESIZE < TOTAL_REST)
 			{
 				printRest(&card, &tft, rest, ++page);
 			}
