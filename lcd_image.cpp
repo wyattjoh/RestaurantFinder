@@ -31,7 +31,7 @@ void lcd_image_draw(
 {
 	File file;
 	
-	#if DEBUG
+	#if DEBUG >= 3
 	Serial.print("Pre width: ");
 	Serial.print(width);
 	Serial.print(", Pre height: ");
@@ -52,7 +52,7 @@ void lcd_image_draw(
 		height = tft->height() - dest->y;
 	}
 
-	#if DEBUG
+	#if DEBUG >= 3
 	Serial.print("dest->x: ");
 	Serial.print(dest->x);
 	Serial.print(", dest->y: ");

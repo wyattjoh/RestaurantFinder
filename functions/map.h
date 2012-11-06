@@ -1,3 +1,11 @@
+/*  CMPUT 296/114 - Assignment 2 - Due 2012-11-05
+
+    Version 1.0 2012-11-05
+    
+    By: Wyatt Johnson (1230799), Andre Charest (1342401)
+    
+*/
+
 #ifndef _MAP_H
 #define _MAP_H
 
@@ -46,7 +54,7 @@ uint16_t manhattan_dist(coord_t *from, coord_t *to, int *ovr)
 	
 	distance_y = abs(from->y - to->y); // Compute Y param
 	
-	#if DEBUG
+	#if DEBUG >= 2
 	Serial.print("x: ");
 	Serial.print(distance_x);
 	Serial.print(", y: ");
