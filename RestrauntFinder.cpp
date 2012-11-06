@@ -115,8 +115,6 @@ void loop() {
 	map_tile.x = map_redraw.x + m_map.x;
 	map_tile.y = map_redraw.y + m_map.y;
 	
-	cursor_map.x = map_tile.x + cursor.position.x;
-	cursor_map.y = map_tile.y + cursor.position.y;
 	
 	bool redraw = 0;
 	
@@ -135,6 +133,8 @@ void loop() {
 	
 	if(state)
 	{
+		cursor_map.x = m_map.x + cursor.position.x;
+		cursor_map.y = m_map.y + cursor.position.y;
 		uint16_t page = 1;
 		
 		loadingScreen(&card, &tft);
